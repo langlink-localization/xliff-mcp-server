@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "xliff-processor": {
+      "command": "python",
+      "args": ["-m", "xliff_mcp.server"],
+      "cwd": "/absolute/path/to/xliff-mcp-server"
+    }
+  }
+}

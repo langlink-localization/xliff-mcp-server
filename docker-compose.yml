@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  xliff-mcp-server:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=8000
+      # Optional: Set API keys for authentication
+      # - XLIFF_MCP_API_KEYS=your-api-key-1,your-api-key-2
+    volumes:
+      # Optional: Mount API keys file
+      # - ./api_keys.json:/app/api_keys.json:ro
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/mcp', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    networks:
+      - xliff-network
+
+  # Optional: Add nginx reverse proxy for production
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      # Add SSL certificates if needed
+      # - ./ssl:/etc/ssl/certs:ro
+    depends_on:
+      - xliff-mcp-server
+    restart: unless-stopped
+    networks:
+      - xliff-network
+
+networks:
+  xliff-network:
+    driver: bridge
