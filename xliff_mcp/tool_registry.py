@@ -3,7 +3,7 @@
 import json
 import logging
 from dataclasses import dataclass
-from typing import Callable, Optional
+from typing import Callable, Optional, Sequence
 
 from mcp.server.fastmcp import FastMCP
 
@@ -45,6 +45,10 @@ def register_tools(
     endpoint_getter: EndpointGetter = lambda: None,
     auth_validator: Optional[AuthValidator] = None,
     auth_enabled_getter: AuthEnabledGetter = lambda: False,
+    prompt_names: Sequence[str] = (),
+    resource_uris: Sequence[str] = (),
+    resource_templates: Sequence[str] = (),
+    skill_descriptors: Sequence[dict[str, object]] = (),
 ) -> RegisteredTools:
     """Register the shared MCP tools on a FastMCP instance."""
 
@@ -223,6 +227,10 @@ def register_tools(
                 "validate_tmx",
                 "get_server_info",
             ],
+            "available_prompts": list(prompt_names),
+            "available_resources": list(resource_uris),
+            "available_resource_templates": list(resource_templates),
+            "available_skills": list(skill_descriptors),
         }
         endpoint = endpoint_getter()
         if endpoint is not None:

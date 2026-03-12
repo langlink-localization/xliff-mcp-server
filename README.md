@@ -9,6 +9,7 @@ An MCP (Model Context Protocol) server for processing XLIFF and TMX translation 
 - **Tag Preservation**: Special processing mode that preserves inline tags for AI translation
 - **Validation**: Validate XLIFF and TMX file formats
 - **Translation Replacement**: Replace target translations in XLIFF files
+- **MCP Skills**: Expose reusable localization workflows as MCP prompts and skill resources
 
 ## Installation
 
@@ -123,6 +124,25 @@ Validate TMX content format.
 
 **Returns:** JSON with validation status and unit count
 
+## Available Skills
+
+The server now exposes MCP-native skills through:
+
+- **Prompts**: Reusable workflow prompts that guide an MCP client through the right tool sequence
+- **Resources**: A discoverable skill catalog at `skills://catalog` and per-skill detail resources at `skills://{skill_name}`
+
+### prepare_xliff_for_translation
+Validate XLIFF content, extract translation units, and summarize translation readiness.
+
+### translate_xliff_with_tags
+Extract tag-preserving XLIFF segments and guide AI translation without breaking inline markup.
+
+### replace_xliff_targets_from_translations
+Merge translated segment JSON back into the original XLIFF and verify the replacement count.
+
+### inspect_tmx_translation_memory
+Validate TMX content, inspect language pairs, and summarize translation memory entries for reuse.
+
 ## Usage Examples
 
 Once configured in Claude Desktop, you can use the tools like this:
@@ -138,6 +158,9 @@ Once configured in Claude Desktop, you can use the tools like this:
 
 4. **Process TMX file:**
    "Extract all translation units from this TMX file"
+
+5. **Use a built-in skill prompt:**
+   "Use the `translate_xliff_with_tags` prompt to help me translate this XLIFF safely"
 
 ## Development
 
