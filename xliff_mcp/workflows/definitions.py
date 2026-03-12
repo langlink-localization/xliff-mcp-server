@@ -1,4 +1,4 @@
-"""Skill metadata and shared formatting helpers."""
+"""Workflow metadata and shared formatting helpers for runtime registration."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ SKILL_DETAIL_TEMPLATE = "skills://{skill_name}"
 
 @dataclass(frozen=True)
 class SkillDefinition:
-    """Declarative metadata for an MCP-native workflow skill."""
+    """Declarative metadata for a workflow skill exposed by the server."""
 
     name: str
     title: str

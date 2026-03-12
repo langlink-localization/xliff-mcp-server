@@ -1,0 +1,46 @@
+{
+  "module": "agent-skills",
+  "description": "Agent-facing skills for localization workflows in xliff-mcp-server.",
+  "skills": [
+    {
+      "name": "prepare_xliff_for_translation",
+      "title": "Prepare XLIFF For Translation",
+      "file": "skills/prepare_xliff_for_translation.md",
+      "summary": "Validate XLIFF and extract a translation-ready segment list.",
+      "recommended_mcp_tools": ["validate_xliff", "process_xliff"],
+      "runtime_prompt": "prepare_xliff_for_translation"
+    },
+    {
+      "name": "translate_xliff_with_tags",
+      "title": "Translate XLIFF While Preserving Tags",
+      "file": "skills/translate_xliff_with_tags.md",
+      "summary": "Translate XLIFF safely without breaking inline markup.",
+      "recommended_mcp_tools": ["process_xliff_with_tags"],
+      "runtime_prompt": "translate_xliff_with_tags"
+    },
+    {
+      "name": "replace_xliff_targets_from_translations",
+      "title": "Rebuild XLIFF Targets From Translation Results",
+      "file": "skills/replace_xliff_targets_from_translations.md",
+      "summary": "Merge approved translations back into the original XLIFF.",
+      "recommended_mcp_tools": ["replace_xliff_targets"],
+      "runtime_prompt": "replace_xliff_targets_from_translations"
+    },
+    {
+      "name": "inspect_tmx_translation_memory",
+      "title": "Inspect TMX Translation Memory",
+      "file": "skills/inspect_tmx_translation_memory.md",
+      "summary": "Validate TMX and summarize language pairs and entries.",
+      "recommended_mcp_tools": ["validate_tmx", "process_tmx"],
+      "runtime_prompt": "inspect_tmx_translation_memory"
+    },
+    {
+      "name": "export_translation_data",
+      "title": "Export Translation Data As CSV Or JSON",
+      "file": "skills/export_translation_data.md",
+      "summary": "Generate CSV or JSON file content from XLIFF or TMX inputs.",
+      "recommended_mcp_tools": ["export_xliff_file", "export_tmx_file"],
+      "runtime_prompt": null
+    }
+  ]
+}

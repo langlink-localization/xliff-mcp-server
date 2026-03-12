@@ -1,4 +1,4 @@
-"""Skill registration for MCP prompt and resource discovery."""
+"""Workflow registration for MCP prompt and resource discovery."""
 
 from __future__ import annotations
 
