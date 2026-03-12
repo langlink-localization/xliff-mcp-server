@@ -4,19 +4,20 @@
 
 ## 🚀 自动发布流程
 
-### 1. 配置 PyPI API Token
+### 1. 配置 PyPI Trusted Publishing
 
-在 GitHub 仓库中设置 Secret：
+本仓库使用 **PyPI Trusted Publishing**，不再需要长期保存的 `PYPI_API_TOKEN`。
 
-1. 访问 https://pypi.org/manage/account/token/
-2. 创建新的 API token，scope 设为 "Entire account"
-3. 复制生成的 token（格式：`pypi-...`）
-4. 在 GitHub 仓库中：
-   - 点击 Settings -> Secrets and variables -> Actions
-   - 点击 "New repository secret"
-   - Name: `PYPI_API_TOKEN`
-   - Value: 粘贴你的 PyPI token
-   - 点击 "Add secret"
+首次配置时，在 PyPI 项目页中添加一个 Trusted Publisher：
+
+1. 打开 PyPI 项目设置中的 Publishing 配置
+2. 添加 GitHub Actions publisher
+3. 填写：
+   - **Owner**: `langlink-localization`
+   - **Repository name**: `xliff-mcp-server`
+   - **Workflow name**: `publish-to-pypi.yml`
+   - **Environment name**: `pypi`
+4. 保存后，GitHub Actions 即可通过 OIDC 发布，无需仓库 secret
 
 ### 2. 发布新版本
 
@@ -48,7 +49,7 @@ git push origin v1.0.0
 1. ✅ 运行测试
 2. 🏗️ 构建 Python 包
 3. ✅ 验证包格式
-4. 🚀 自动发布到 PyPI
+4. 🚀 使用 Trusted Publishing 自动发布到 PyPI
 
 ## 🧪 持续测试
 
@@ -92,9 +93,15 @@ git push origin v1.0.0
 
 ```bash
 # 安装开发依赖
-pip install -r requirements.txt
+pip install -e ".[dev]"
+
+# 本地 lint
+ruff check .
 
 # 本地测试
+python -m pytest
+
+# 冒烟验证
 python test_server.py
 
 # 本地构建
@@ -105,3 +112,4 @@ python -m build
 
 - GitHub Actions: https://github.com/langlink-localization/xliff-mcp-server/actions
 - PyPI 包页面: https://pypi.org/project/xliff-mcp-server/
+- PyPI Trusted Publishing 文档: https://docs.pypi.org/trusted-publishers/using-a-publisher/

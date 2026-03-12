@@ -1,7 +1,7 @@
 """Data models for XLIFF MCP Server"""
 
 from pydantic import BaseModel
-from typing import Optional, List, Union
+from typing import Optional, Union
 
 
 class XliffData(BaseModel):

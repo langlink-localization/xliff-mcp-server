@@ -27,7 +27,7 @@ def install_dependencies():
     """Install required dependencies"""
     print("📦 Installing dependencies...")
     try:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", "."])
         print("✅ Dependencies installed successfully!")
         return True
     except subprocess.CalledProcessError as e:
@@ -64,7 +64,7 @@ def configure_claude_desktop():
     config_path = get_claude_config_path()
     current_dir = Path.cwd().absolute()
     
-    print(f"🔧 Configuring Claude Desktop...")
+    print("🔧 Configuring Claude Desktop...")
     print(f"   Config file: {config_path}")
     
     # Create config directory if it doesn't exist
@@ -95,7 +95,7 @@ def configure_claude_desktop():
         with open(config_path, 'w') as f:
             json.dump(config, f, indent=2)
         print("✅ Claude Desktop configured successfully!")
-        print(f"   Server 'xliff-processor' added to config")
+        print("   Server 'xliff-processor' added to config")
         return True
     except Exception as e:
         print(f"❌ Failed to write config: {e}")
@@ -108,7 +108,7 @@ def main():
     print("=" * 50)
     
     # Check we're in the right directory
-    if not Path("xliff_mcp").exists() or not Path("requirements.txt").exists():
+    if not Path("xliff_mcp").exists() or not Path("pyproject.toml").exists():
         print("❌ Please run this script from the xliff-mcp-server directory")
         sys.exit(1)
     

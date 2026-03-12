@@ -147,12 +147,12 @@ def main():
     
     if args.command == 'generate':
         api_key = manager.generate_key(args.name, args.rate_limit, args.permissions)
-        print(f"\n🔑 New API key generated:")
+        print("\n🔑 New API key generated:")
         print(f"Key: {api_key}")
         print(f"Name: {args.name}")
         print(f"Rate Limit: {args.rate_limit} requests/minute")
         print(f"Permissions: {', '.join(args.permissions)}")
-        print(f"\n⚠️  Save this key securely - it won't be shown again!")
+        print("\n⚠️  Save this key securely - it won't be shown again!")
         
     elif args.command == 'list':
         manager.list_keys()

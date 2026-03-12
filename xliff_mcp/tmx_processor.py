@@ -11,7 +11,9 @@ logger = logging.getLogger(__name__)
 
 class TmxProcessorService:
     """TMX file processing service"""
-    
+
+    XML_LANG_ATTR = "{http://www.w3.org/XML/1998/namespace}lang"
+
     @staticmethod
     def process_tmx(file_name: str, content: str) -> List[TmxData]:
         """
@@ -67,8 +69,18 @@ class TmxProcessorService:
                 if hasattr(unit, 'xmlelement') and unit.xmlelement is not None:
                     tuvs = unit.xmlelement.xpath('.//tuv')
                     if len(tuvs) >= 2:
-                        src_lang = tuvs[0].get('xml:lang') or tuvs[0].get('lang') or ""
-                        tgt_lang = tuvs[1].get('xml:lang') or tuvs[1].get('lang') or ""
+                        src_lang = (
+                            tuvs[0].get(TmxProcessorService.XML_LANG_ATTR)
+                            or tuvs[0].get('xml:lang')
+                            or tuvs[0].get('lang')
+                            or ""
+                        )
+                        tgt_lang = (
+                            tuvs[1].get(TmxProcessorService.XML_LANG_ATTR)
+                            or tuvs[1].get('xml:lang')
+                            or tuvs[1].get('lang')
+                            or ""
+                        )
                         src_lang = src_lang.lower()
                         tgt_lang = tgt_lang.lower()
                 

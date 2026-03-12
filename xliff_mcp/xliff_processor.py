@@ -1,7 +1,7 @@
 """XLIFF processing service"""
 
 from translate.storage import xliff
-from typing import List, Dict, Any, Tuple
+from typing import List, Tuple
 import logging
 import re
 from .models import XliffData

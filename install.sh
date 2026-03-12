@@ -26,7 +26,6 @@ if command -v uv &> /dev/null; then
     uv pip install -e .
 else
     echo "✓ Using pip for installation"
-    python3 -m pip install -r requirements.txt
     python3 -m pip install -e .
 fi
 

@@ -12,13 +12,13 @@
 
 ```bash
 # 1. 构建并启动服务
-docker-compose up -d
+docker compose up -d
 
 # 2. 检查服务状态
-docker-compose ps
+docker compose ps
 
 # 3. 查看日志
-docker-compose logs -f xliff-mcp-server
+docker compose logs -f xliff-mcp-server
 ```
 
 #### 自定义配置
@@ -26,23 +26,23 @@ docker-compose logs -f xliff-mcp-server
 ```bash
 # 设置API密钥保护服务
 export XLIFF_MCP_API_KEYS="key1,key2,key3"
-docker-compose up -d
+docker compose up -d
 
 # 或者修改 docker-compose.yml
 environment:
-  - XLIFF_MCP_API_KEYS=your-secret-key-1,your-secret-key-2
+  XLIFF_MCP_API_KEYS: your-secret-key-1,your-secret-key-2
 ```
 
 ### 选项2: 直接运行
 
 ```bash
 # 安装依赖
-pip install -r requirements.txt
 pip install -e .
 
 # 设置环境变量
 export HOST=0.0.0.0
 export PORT=8000
+export TZ=Asia/Shanghai
 export XLIFF_MCP_API_KEYS=your-secret-api-key
 
 # 启动HTTP服务器
@@ -65,6 +65,7 @@ User=www-data
 WorkingDirectory=/opt/xliff-mcp-server
 Environment=HOST=0.0.0.0
 Environment=PORT=8000
+Environment=TZ=Asia/Shanghai
 Environment=XLIFF_MCP_API_KEYS=your-secret-key
 ExecStart=/opt/xliff-mcp-server/.venv/bin/python -m xliff_mcp.http_server
 Restart=always
@@ -360,7 +361,7 @@ async function connectToMCP() {
 
 ```bash
 # 检查服务状态
-curl http://your-domain.com/mcp/health
+curl http://your-domain.com/health
 
 # 检查工具列表
 curl -X POST http://your-domain.com/mcp \
@@ -372,7 +373,7 @@ curl -X POST http://your-domain.com/mcp \
 
 ```bash
 # Docker日志
-docker-compose logs -f xliff-mcp-server
+docker compose logs -f xliff-mcp-server
 
 # 系统日志
 sudo journalctl -u xliff-mcp -f
