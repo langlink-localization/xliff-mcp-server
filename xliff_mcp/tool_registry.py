@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from typing import Callable, Optional, Sequence
 
 from mcp.server.fastmcp import FastMCP
+from .exporter import export_records
 
 
 AuthValidator = Callable[[Optional[str]], dict | None]
@@ -23,6 +24,8 @@ class RegisteredTools:
     replace_xliff_targets: Callable[..., str]
     process_tmx: Callable[..., str]
     validate_tmx: Callable[..., str]
+    export_xliff_file: Callable[..., str]
+    export_tmx_file: Callable[..., str]
     get_server_info: Callable[..., str]
 
 
@@ -212,6 +215,86 @@ def register_tools(
             })
 
     @mcp.tool()
+    def export_xliff_file(
+        file_name: str,
+        content: str,
+        output_format: str = "csv",
+        preserve_tags: bool = False,
+        api_key: Optional[str] = None,
+    ) -> str:
+        auth_error = require_auth(api_key)
+        if auth_error is not None:
+            return auth_failure_response(auth_error["reason"])
+
+        try:
+            data = (
+                xliff_service.process_xliff_with_tags(file_name, content)
+                if preserve_tags
+                else xliff_service.process_xliff(file_name, content)
+            )
+            export_payload = export_records(
+                file_name,
+                data,
+                output_format=output_format,
+            )
+            return _dump_json({
+                "success": True,
+                "message": f"Successfully generated {export_payload['file_name']}",
+                "file_name": export_payload["file_name"],
+                "format": export_payload["format"],
+                "mime_type": export_payload["mime_type"],
+                "encoding": export_payload["encoding"],
+                "content": export_payload["content"],
+                "unit_count": export_payload["unit_count"],
+                "preserve_tags": preserve_tags,
+            })
+        except Exception as error:
+            logger.error("Failed to export XLIFF file: %s", error)
+            return _dump_json({
+                "success": False,
+                "message": _tool_error_message("Error exporting XLIFF", error),
+                "content": "",
+                "unit_count": 0,
+            })
+
+    @mcp.tool()
+    def export_tmx_file(
+        file_name: str,
+        content: str,
+        output_format: str = "csv",
+        api_key: Optional[str] = None,
+    ) -> str:
+        auth_error = require_auth(api_key)
+        if auth_error is not None:
+            return auth_failure_response(auth_error["reason"])
+
+        try:
+            data = tmx_service.process_tmx(file_name, content)
+            export_payload = export_records(
+                file_name,
+                data,
+                output_format=output_format,
+            )
+            return _dump_json({
+                "success": True,
+                "message": f"Successfully generated {export_payload['file_name']}",
+                "file_name": export_payload["file_name"],
+                "format": export_payload["format"],
+                "mime_type": export_payload["mime_type"],
+                "encoding": export_payload["encoding"],
+                "content": export_payload["content"],
+                "unit_count": export_payload["unit_count"],
+            })
+        except Exception as error:
+            logger.error("Failed to export TMX file: %s", error)
+            return _dump_json({
+                "success": False,
+                "message": _tool_error_message("Error exporting TMX", error),
+                "content": "",
+                "unit_count": 0,
+            })
+
+    @mcp.tool()
     def get_server_info(api_key: Optional[str] = None) -> str:
         del api_key
         payload = {
@@ -225,6 +308,8 @@ def register_tools(
                 "replace_xliff_targets",
                 "process_tmx",
                 "validate_tmx",
+                "export_xliff_file",
+                "export_tmx_file",
                 "get_server_info",
             ],
             "available_prompts": list(prompt_names),
@@ -247,5 +332,7 @@ def register_tools(
         replace_xliff_targets=replace_xliff_targets,
         process_tmx=process_tmx,
         validate_tmx=validate_tmx,
+        export_xliff_file=export_xliff_file,
+        export_tmx_file=export_tmx_file,
         get_server_info=get_server_info,
     )
