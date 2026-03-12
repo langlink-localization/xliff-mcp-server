@@ -48,6 +48,13 @@ def test_http_server_info_uses_current_version(monkeypatch) -> None:
     assert info["version"] == __version__
     assert info["endpoint"] == "/mcp"
     assert info["authentication_required"] is False
+    assert "prepare_xliff_for_translation" in info["available_prompts"]
+    assert "skills://catalog" in info["available_resources"]
+    assert "skills://{skill_name}" in info["available_resource_templates"]
+    assert any(
+        skill["name"] == "inspect_tmx_translation_memory"
+        for skill in info["available_skills"]
+    )
 
 
 def test_http_server_requires_api_key_when_configured(monkeypatch) -> None:

@@ -83,3 +83,10 @@ def test_stdio_server_info_uses_current_version() -> None:
     assert info["transport"] == "stdio"
     assert info["version"]
     assert "get_server_info" in info["available_tools"]
+    assert "prepare_xliff_for_translation" in info["available_prompts"]
+    assert "skills://catalog" in info["available_resources"]
+    assert "skills://{skill_name}" in info["available_resource_templates"]
+    assert any(
+        skill["name"] == "translate_xliff_with_tags"
+        for skill in info["available_skills"]
+    )
