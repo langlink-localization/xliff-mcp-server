@@ -75,12 +75,13 @@ xliff-mcp-server/
 │   ├── __init__.py           # Package init
 │   ├── __main__.py           # Module entry point
 │   ├── server.py             # Main MCP server with tools
+│   ├── tool_registry.py      # Shared MCP tool registration
 │   ├── models.py             # Data models (Pydantic)
 │   ├── xliff_processor.py    # XLIFF processing logic
 │   └── tmx_processor.py      # TMX processing logic
 ├── setup.py                  # Automated setup script
 ├── test_server.py           # Test suite
-├── requirements.txt         # Dependencies
+├── tests/                   # Pytest suite
 ├── pyproject.toml          # Modern Python packaging
 ├── README.md               # Full documentation
 └── QUICKSTART.md           # This guide
@@ -108,6 +109,9 @@ Add this to your Claude Desktop config:
 ## Testing Your Installation
 
 ```bash
+# Lint the codebase
+ruff check .
+
 # Test the server components
 python -m pytest
 

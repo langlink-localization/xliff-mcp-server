@@ -64,7 +64,7 @@ def configure_claude_desktop():
     config_path = get_claude_config_path()
     current_dir = Path.cwd().absolute()
     
-    print(f"🔧 Configuring Claude Desktop...")
+    print("🔧 Configuring Claude Desktop...")
     print(f"   Config file: {config_path}")
     
     # Create config directory if it doesn't exist
@@ -95,7 +95,7 @@ def configure_claude_desktop():
         with open(config_path, 'w') as f:
             json.dump(config, f, indent=2)
         print("✅ Claude Desktop configured successfully!")
-        print(f"   Server 'xliff-processor' added to config")
+        print("   Server 'xliff-processor' added to config")
         return True
     except Exception as e:
         print(f"❌ Failed to write config: {e}")

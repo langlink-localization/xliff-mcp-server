@@ -95,6 +95,9 @@ git push origin v1.0.0
 # 安装开发依赖
 pip install -e ".[dev]"
 
+# 本地 lint
+ruff check .
+
 # 本地测试
 python -m pytest
 

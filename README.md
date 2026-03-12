@@ -141,6 +141,12 @@ Once configured in Claude Desktop, you can use the tools like this:
 
 ## Development
 
+### Running lint
+
+```bash
+ruff check .
+```
+
 ### Running tests
 
 ```bash
