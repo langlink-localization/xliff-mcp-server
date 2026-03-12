@@ -8,7 +8,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from . import __version__
 from .auth import APIKeyAuth, RateLimiter
-from .skill_registry import (
+from .skills import (
     get_skill_descriptors,
     list_skill_names,
     list_skill_resource_templates,

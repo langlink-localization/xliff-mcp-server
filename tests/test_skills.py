@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import xliff_mcp.skill_registry as legacy_skill_registry
 import xliff_mcp.server as server
+from xliff_mcp.skills import list_skill_names
 
 
 async def test_fastmcp_lists_translation_skill_prompts() -> None:
@@ -42,3 +44,7 @@ async def test_fastmcp_reads_skill_prompts_and_resources() -> None:
     assert "skills://{skill_name}" in resource_template_uris
     assert "prepare_xliff_for_translation" in catalog[0].content
     assert "Prompt name: translate_xliff_with_tags" in detail[0].content
+
+
+def test_legacy_skill_registry_import_still_works() -> None:
+    assert legacy_skill_registry.list_skill_names() == list_skill_names()

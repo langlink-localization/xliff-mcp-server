@@ -131,6 +131,8 @@ The server now exposes MCP-native skills through:
 - **Prompts**: Reusable workflow prompts that guide an MCP client through the right tool sequence
 - **Resources**: A discoverable skill catalog at `skills://catalog` and per-skill detail resources at `skills://{skill_name}`
 
+The implementation now lives under `xliff_mcp/skills/`, so the MCP skills are easy to find and extend in the repository.
+
 ### prepare_xliff_for_translation
 Validate XLIFF content, extract translation units, and summarize translation readiness.
 

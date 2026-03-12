@@ -75,6 +75,7 @@ xliff-mcp-server/
 │   ├── __init__.py           # Package init
 │   ├── __main__.py           # Module entry point
 │   ├── server.py             # Main MCP server with tools
+│   ├── skills/               # MCP-native prompts/resources for workflow skills
 │   ├── tool_registry.py      # Shared MCP tool registration
 │   ├── models.py             # Data models (Pydantic)
 │   ├── xliff_processor.py    # XLIFF processing logic
