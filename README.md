@@ -9,6 +9,7 @@ An MCP (Model Context Protocol) server for processing XLIFF and TMX translation 
 - **Tag Preservation**: Special processing mode that preserves inline tags for AI translation
 - **Validation**: Validate XLIFF and TMX file formats
 - **Translation Replacement**: Replace target translations in XLIFF files
+- **CSV / JSON Export**: Generate CSV or JSON file content from XLIFF and TMX inputs
 - **MCP Skills**: Expose reusable localization workflows as MCP prompts and skill resources
 
 ## Installation
@@ -124,6 +125,27 @@ Validate TMX content format.
 
 **Returns:** JSON with validation status and unit count
 
+### export_xliff_file
+Generate CSV or JSON file content from an XLIFF file.
+
+**Parameters:**
+- `file_name` (string): Name of the source XLIFF file
+- `content` (string): XLIFF file content
+- `output_format` (string): `csv` or `json`
+- `preserve_tags` (boolean): Whether to preserve inline tags before export
+
+**Returns:** JSON with generated `file_name`, `mime_type`, `content`, and `unit_count`
+
+### export_tmx_file
+Generate CSV or JSON file content from a TMX file.
+
+**Parameters:**
+- `file_name` (string): Name of the source TMX file
+- `content` (string): TMX file content
+- `output_format` (string): `csv` or `json`
+
+**Returns:** JSON with generated `file_name`, `mime_type`, `content`, and `unit_count`
+
 ## Available Skills
 
 The server now exposes MCP-native skills through:
@@ -161,7 +183,13 @@ Once configured in Claude Desktop, you can use the tools like this:
 4. **Process TMX file:**
    "Extract all translation units from this TMX file"
 
-5. **Use a built-in skill prompt:**
+5. **Generate a CSV export:**
+   "Export this XLIFF file as CSV and give me the file content"
+
+6. **Generate a JSON export:**
+   "Export this TMX file as JSON so I can save it locally"
+
+7. **Use a built-in skill prompt:**
    "Use the `translate_xliff_with_tags` prompt to help me translate this XLIFF safely"
 
 ## Development

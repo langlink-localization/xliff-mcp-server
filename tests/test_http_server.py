@@ -7,7 +7,7 @@ import json
 
 import httpx
 from xliff_mcp import __version__
-from tests.samples import SAMPLE_XLIFF
+from tests.samples import SAMPLE_XLIFF, SAMPLE_TMX
 
 
 def load_http_server(monkeypatch, api_keys: str | None = None):
@@ -48,6 +48,8 @@ def test_http_server_info_uses_current_version(monkeypatch) -> None:
     assert info["version"] == __version__
     assert info["endpoint"] == "/mcp"
     assert info["authentication_required"] is False
+    assert "export_xliff_file" in info["available_tools"]
+    assert "export_tmx_file" in info["available_tools"]
     assert "prepare_xliff_for_translation" in info["available_prompts"]
     assert "skills://catalog" in info["available_resources"]
     assert "skills://{skill_name}" in info["available_resource_templates"]
@@ -66,6 +68,26 @@ def test_http_server_requires_api_key_when_configured(monkeypatch) -> None:
     assert unauthorized["valid"] is False
     assert unauthorized["message"] == "Authentication failed: No API key provided"
     assert authorized["valid"] is True
+
+
+def test_http_export_tools_require_api_key_when_configured(monkeypatch) -> None:
+    http_server = load_http_server(monkeypatch, api_keys="secret-key")
+
+    unauthorized = json.loads(
+        http_server.export_tmx_file("memory.tmx", SAMPLE_TMX, output_format="json")
+    )
+    authorized = json.loads(
+        http_server.export_tmx_file(
+            "memory.tmx",
+            SAMPLE_TMX,
+            output_format="json",
+            api_key="secret-key",
+        )
+    )
+
+    assert unauthorized["success"] is False
+    assert unauthorized["message"] == "Authentication failed: No API key provided"
+    assert authorized["success"] is True
 
 
 def test_http_server_accepts_legacy_single_key_env(monkeypatch) -> None:
