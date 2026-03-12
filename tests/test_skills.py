@@ -1,10 +1,16 @@
-"""Coverage for MCP-native skill registration on FastMCP."""
+"""Coverage for workflow registration and agent skill assets."""
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import xliff_mcp.skill_registry as legacy_skill_registry
 import xliff_mcp.server as server
-from xliff_mcp.skills import list_skill_names
+from xliff_mcp.workflows import list_skill_names
+
+
+REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
 async def test_fastmcp_lists_translation_skill_prompts() -> None:
@@ -48,3 +54,14 @@ async def test_fastmcp_reads_skill_prompts_and_resources() -> None:
 
 def test_legacy_skill_registry_import_still_works() -> None:
     assert legacy_skill_registry.list_skill_names() == list_skill_names()
+
+
+def test_agent_skills_catalog_points_to_existing_files() -> None:
+    catalog_path = REPO_ROOT / "skills" / "catalog.json"
+    catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
+
+    assert catalog["module"] == "agent-skills"
+    assert len(catalog["skills"]) >= 5
+
+    for skill in catalog["skills"]:
+        assert (REPO_ROOT / skill["file"]).exists()

@@ -10,7 +10,7 @@ An MCP (Model Context Protocol) server for processing XLIFF and TMX translation 
 - **Validation**: Validate XLIFF and TMX file formats
 - **Translation Replacement**: Replace target translations in XLIFF files
 - **CSV / JSON Export**: Generate CSV or JSON file content from XLIFF and TMX inputs
-- **MCP Skills**: Expose reusable localization workflows as MCP prompts and skill resources
+- **Agent Skills Module**: Provide a standalone `skills/` module that AI agents can read directly
 
 ## Installation
 
@@ -148,12 +148,22 @@ Generate CSV or JSON file content from a TMX file.
 
 ## Available Skills
 
-The server now exposes MCP-native skills through:
+Skills are separate from the MCP runtime and its tools.
 
-- **Prompts**: Reusable workflow prompts that guide an MCP client through the right tool sequence
+- **MCP Runtime**: The `xliff_mcp/` package that exposes tools, prompts, and resources
+- **Agent Skills Module**: The top-level `skills/` directory that AI agents can read directly
+- **Runtime Workflow Registration**: The `xliff_mcp/workflows/` package that maps workflow guidance into MCP prompts/resources
+
+The runtime still exposes workflow guidance through:
+
+- **Prompts**: Reusable workflow prompts that guide the client through the right tool sequence
 - **Resources**: A discoverable skill catalog at `skills://catalog` and per-skill detail resources at `skills://{skill_name}`
 
-The implementation now lives under `xliff_mcp/skills/`, so the MCP skills are easy to find and extend in the repository.
+For agent usage inside the repository:
+
+- start with [skills/README.md](/home/user/projects/xliff-mcp-server/skills/README.md)
+- use [skills/catalog.json](/home/user/projects/xliff-mcp-server/skills/catalog.json) as the machine-readable index
+- open the referenced skill markdown file for detailed workflow instructions
 
 ### prepare_xliff_for_translation
 Validate XLIFF content, extract translation units, and summarize translation readiness.
@@ -189,7 +199,7 @@ Once configured in Claude Desktop, you can use the tools like this:
 6. **Generate a JSON export:**
    "Export this TMX file as JSON so I can save it locally"
 
-7. **Use a built-in skill prompt:**
+7. **Use a runtime workflow prompt:**
    "Use the `translate_xliff_with_tags` prompt to help me translate this XLIFF safely"
 
 ## Development

@@ -71,11 +71,12 @@ Once configured, you can use natural language with Claude:
 
 ```
 xliff-mcp-server/
+├── skills/                  # Agent-facing skills module for AI agents
 ├── xliff_mcp/
 │   ├── __init__.py           # Package init
 │   ├── __main__.py           # Module entry point
 │   ├── server.py             # Main MCP server with tools
-│   ├── skills/               # MCP-native prompts/resources for workflow skills
+│   ├── workflows/            # Runtime workflow registration for prompts/resources
 │   ├── tool_registry.py      # Shared MCP tool registration
 │   ├── models.py             # Data models (Pydantic)
 │   ├── xliff_processor.py    # XLIFF processing logic

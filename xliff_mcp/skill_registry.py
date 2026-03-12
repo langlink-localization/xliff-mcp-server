@@ -1,6 +1,6 @@
-"""Backward-compatible re-export for the dedicated skills package."""
+"""Backward-compatible re-export for runtime workflow registration."""
 
-from .skills import (
+from .workflows import (
     RegisteredSkills,
     SKILL_CATALOG_URI,
     SKILL_DEFINITIONS,

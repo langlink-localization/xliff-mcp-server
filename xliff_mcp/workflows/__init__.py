@@ -1,4 +1,4 @@
-"""MCP-native skills for translation workflows."""
+"""Workflow registration used by the MCP runtime."""
 
 from .definitions import (
     SKILL_CATALOG_URI,
