@@ -23,7 +23,6 @@ python setup.py
 #### Using pip
 
 ```bash
-pip install -r requirements.txt
 pip install -e .
 ```
 
@@ -145,7 +144,13 @@ Once configured in Claude Desktop, you can use the tools like this:
 ### Running tests
 
 ```bash
-python -m pytest tests/
+python -m pytest
+```
+
+### Running the smoke test script
+
+```bash
+python test_server.py
 ```
 
 ### Running the server directly
@@ -157,7 +162,7 @@ python -m xliff_mcp.server
 ## Requirements
 
 - Python 3.10+
-- mcp[cli] >= 1.2.0
+- mcp >= 1.2.0
 - translate-toolkit >= 3.0.0
 - lxml >= 4.9.0
 - pydantic >= 2.0.0

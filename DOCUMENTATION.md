@@ -173,7 +173,7 @@ import json
 from xliff_mcp.server import process_xliff
 
 # Process XLIFF content
-result = await process_xliff("myfile.xliff", xliff_content)
+result = process_xliff("myfile.xliff", xliff_content)
 data = json.loads(result)
 
 # Extract untranslated segments

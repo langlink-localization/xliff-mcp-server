@@ -1,22 +1,22 @@
-version: '3.8'
-
 services:
   xliff-mcp-server:
-    build: .
+    build:
+      context: .
     ports:
       - "8000:8000"
     environment:
-      - HOST=0.0.0.0
-      - PORT=8000
+      HOST: 0.0.0.0
+      PORT: 8000
+      TZ: Asia/Shanghai
       # Optional: Set API keys for authentication
-      # - XLIFF_MCP_API_KEYS=your-api-key-1,your-api-key-2
+      # XLIFF_MCP_API_KEYS: your-api-key-1,your-api-key-2
     volumes:
       # Optional: Mount API keys file
       # - ./api_keys.json:/app/api_keys.json:ro
       - ./logs:/app/logs
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/mcp', timeout=5)"]
+      test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://localhost:8000/health', timeout=5).read()"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -35,7 +35,8 @@ services:
       # Add SSL certificates if needed
       # - ./ssl:/etc/ssl/certs:ro
     depends_on:
-      - xliff-mcp-server
+      xliff-mcp-server:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - xliff-network

@@ -1,13 +1,16 @@
-"""XLIFF MCP HTTP Server - For public deployment"""
+"""XLIFF MCP HTTP Server - For public deployment."""
 
 import json
 import logging
 import os
-from typing import Any, List, Dict, Optional
+from typing import Optional
 from mcp.server.fastmcp import FastMCP
+from starlette.requests import Request
+from starlette.responses import JSONResponse
+from . import __version__
+from .auth import APIKeyAuth, RateLimiter
 from .xliff_processor import XliffProcessorService
 from .tmx_processor import TmxProcessorService
-from .models import TranslationReplacementData
 
 # Configure logging to avoid stdout interference with HTTP
 logging.basicConfig(
@@ -16,23 +19,51 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Initialize FastMCP server for HTTP deployment
-# Use stateless HTTP for public deployment (no session persistence)
-mcp = FastMCP("xliff-processor", stateless_http=True)
+HTTP_HOST = os.getenv("HOST", "0.0.0.0")
+HTTP_PORT = int(os.getenv("PORT", "8000"))
+HTTP_ENDPOINT = "/mcp"
+
+# Initialize FastMCP server for HTTP deployment.
+mcp = FastMCP(
+    "xliff-processor",
+    stateless_http=True,
+    host=HTTP_HOST,
+    port=HTTP_PORT,
+    streamable_http_path=HTTP_ENDPOINT,
+)
 
 # Initialize processors
 xliff_service = XliffProcessorService()
 tmx_service = TmxProcessorService()
+api_auth = APIKeyAuth()
+rate_limiter = RateLimiter()
 
-# Optional API key authentication
-API_KEY = os.getenv("XLIFF_MCP_API_KEY", None)
+def _authorize_request(api_key: Optional[str]) -> dict | None:
+    """Validate authentication and rate limit state for a tool request."""
+    auth_result = api_auth.verify_key(api_key)
+    if not auth_result["valid"]:
+        return auth_result
+
+    if api_auth.enabled and not rate_limiter.is_allowed(api_key or "", auth_result["rate_limit"]):
+        return {
+            "valid": False,
+            "reason": "Rate limit exceeded. Please try again later.",
+            "error_code": "RATE_LIMIT_EXCEEDED",
+        }
+
+    return None
 
 
-def verify_api_key(api_key: Optional[str]) -> bool:
-    """Verify API key if authentication is enabled"""
-    if API_KEY is None:
-        return True  # No authentication required
-    return api_key == API_KEY
+@mcp.custom_route("/health", methods=["GET"], include_in_schema=False)
+async def health_check(_: Request) -> JSONResponse:
+    """Provide a simple health endpoint for containers and reverse proxies."""
+    return JSONResponse({
+        "status": "ok",
+        "server_name": "XLIFF MCP Server",
+        "version": __version__,
+        "endpoint": HTTP_ENDPOINT,
+        "authentication_required": api_auth.enabled,
+    })
 
 
 @mcp.tool()
@@ -48,10 +79,11 @@ def process_xliff(file_name: str, content: str, api_key: Optional[str] = None) -
     Returns:
         JSON string containing list of translation units with their metadata
     """
-    if not verify_api_key(api_key):
+    auth_error = _authorize_request(api_key)
+    if auth_error is not None:
         return json.dumps({
             "success": False,
-            "message": "Invalid or missing API key",
+            "message": f"Authentication failed: {auth_error['reason']}",
             "data": []
         })
     
@@ -85,10 +117,11 @@ def process_xliff_with_tags(file_name: str, content: str, api_key: Optional[str]
     Returns:
         JSON string containing translation units with preserved tags
     """
-    if not verify_api_key(api_key):
+    auth_error = _authorize_request(api_key)
+    if auth_error is not None:
         return json.dumps({
             "success": False,
-            "message": "Invalid or missing API key",
+            "message": f"Authentication failed: {auth_error['reason']}",
             "data": []
         })
     
@@ -121,10 +154,11 @@ def validate_xliff(content: str, api_key: Optional[str] = None) -> str:
     Returns:
         JSON string with validation result
     """
-    if not verify_api_key(api_key):
+    auth_error = _authorize_request(api_key)
+    if auth_error is not None:
         return json.dumps({
             "valid": False,
-            "message": "Invalid or missing API key",
+            "message": f"Authentication failed: {auth_error['reason']}",
             "unit_count": 0
         })
     
@@ -157,10 +191,11 @@ def replace_xliff_targets(content: str, translations: str, api_key: Optional[str
     Returns:
         JSON string with updated XLIFF content and replacement count
     """
-    if not verify_api_key(api_key):
+    auth_error = _authorize_request(api_key)
+    if auth_error is not None:
         return json.dumps({
             "success": False,
-            "message": "Invalid or missing API key",
+            "message": f"Authentication failed: {auth_error['reason']}",
             "content": content,
             "replacements_count": 0
         })
@@ -210,10 +245,11 @@ def process_tmx(file_name: str, content: str, api_key: Optional[str] = None) -> 
     Returns:
         JSON string containing list of translation units with metadata
     """
-    if not verify_api_key(api_key):
+    auth_error = _authorize_request(api_key)
+    if auth_error is not None:
         return json.dumps({
             "success": False,
-            "message": "Invalid or missing API key",
+            "message": f"Authentication failed: {auth_error['reason']}",
             "data": []
         })
     
@@ -246,10 +282,11 @@ def validate_tmx(content: str, api_key: Optional[str] = None) -> str:
     Returns:
         JSON string with validation result
     """
-    if not verify_api_key(api_key):
+    auth_error = _authorize_request(api_key)
+    if auth_error is not None:
         return json.dumps({
             "valid": False,
-            "message": "Invalid or missing API key",
+            "message": f"Authentication failed: {auth_error['reason']}",
             "unit_count": 0
         })
     
@@ -282,7 +319,7 @@ def get_server_info(api_key: Optional[str] = None) -> str:
     """
     return json.dumps({
         "server_name": "XLIFF MCP Server",
-        "version": "0.1.0",
+        "version": __version__,
         "description": "Process XLIFF and TMX translation files via MCP",
         "available_tools": [
             "process_xliff",
@@ -293,23 +330,20 @@ def get_server_info(api_key: Optional[str] = None) -> str:
             "validate_tmx",
             "get_server_info"
         ],
-        "authentication_required": API_KEY is not None,
-        "endpoint": "/mcp"
+        "authentication_required": api_auth.enabled,
+        "endpoint": HTTP_ENDPOINT,
     })
 
 
 def main():
     """Run the HTTP MCP server"""
-    import os
-    # Set port to avoid conflicts
-    os.environ['MCP_HTTP_PORT'] = '8080'
-    
-    logger.info("Starting XLIFF MCP HTTP server on port 8080")
-    if API_KEY:
+
+    logger.info("Starting XLIFF MCP HTTP server on %s:%s%s", HTTP_HOST, HTTP_PORT, HTTP_ENDPOINT)
+    if api_auth.enabled:
         logger.info("API key authentication enabled")
     else:
         logger.warning("No API key set - server is publicly accessible")
-    
+
     # Run with streamable HTTP transport for public access
     mcp.run(transport="streamable-http")
 

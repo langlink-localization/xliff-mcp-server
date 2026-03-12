@@ -92,9 +92,12 @@ git push origin v1.0.0
 
 ```bash
 # 安装开发依赖
-pip install -r requirements.txt
+pip install -e ".[dev]"
 
 # 本地测试
+python -m pytest
+
+# 冒烟验证
 python test_server.py
 
 # 本地构建

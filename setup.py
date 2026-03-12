@@ -27,7 +27,7 @@ def install_dependencies():
     """Install required dependencies"""
     print("📦 Installing dependencies...")
     try:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", "."])
         print("✅ Dependencies installed successfully!")
         return True
     except subprocess.CalledProcessError as e:
@@ -108,7 +108,7 @@ def main():
     print("=" * 50)
     
     # Check we're in the right directory
-    if not Path("xliff_mcp").exists() or not Path("requirements.txt").exists():
+    if not Path("xliff_mcp").exists() or not Path("pyproject.toml").exists():
         print("❌ Please run this script from the xliff-mcp-server directory")
         sys.exit(1)
     

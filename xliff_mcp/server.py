@@ -1,12 +1,11 @@
-"""XLIFF MCP Server - Main server implementation"""
+"""XLIFF MCP Server - Main server implementation."""
 
 import json
 import logging
-from typing import Any, List, Dict
 from mcp.server.fastmcp import FastMCP
+from . import __version__
 from .xliff_processor import XliffProcessorService
 from .tmx_processor import TmxProcessorService
-from .models import TranslationReplacementData
 
 # Configure logging to stderr to avoid stdout interference
 logging.basicConfig(
@@ -211,6 +210,26 @@ def validate_tmx(content: str) -> str:
             "message": f"Validation error: {str(e)}",
             "unit_count": 0
         })
+
+
+@mcp.tool()
+def get_server_info() -> str:
+    """Get server information and available tools."""
+    return json.dumps({
+        "server_name": "XLIFF MCP Server",
+        "version": __version__,
+        "description": "Process XLIFF and TMX translation files via MCP",
+        "available_tools": [
+            "process_xliff",
+            "process_xliff_with_tags",
+            "validate_xliff",
+            "replace_xliff_targets",
+            "process_tmx",
+            "validate_tmx",
+            "get_server_info",
+        ],
+        "transport": "stdio",
+    })
 
 
 def main():

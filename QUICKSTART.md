@@ -109,6 +109,9 @@ Add this to your Claude Desktop config:
 
 ```bash
 # Test the server components
+python -m pytest
+
+# Optional smoke test script
 python test_server.py
 
 # Test MCP server startup (should run and wait for input)
@@ -117,7 +120,7 @@ python -m xliff_mcp.server
 
 ## Troubleshooting
 
-1. **"Module not found" error**: Run `pip install -r requirements.txt`
+1. **"Module not found" error**: Run `pip install -e .`
 2. **MCP tools not showing in Claude**: Restart Claude Desktop completely
 3. **Server not responding**: Check the Claude Desktop logs for error messages
 4. **Permission errors**: Ensure the working directory path is correct and accessible
@@ -131,9 +134,10 @@ python -m xliff_mcp.server
 ## Support
 
 If you encounter issues:
-1. Check that all dependencies are installed: `pip install -r requirements.txt`
-2. Verify the server works: `python test_server.py`
-3. Check Claude Desktop config file syntax
-4. Restart Claude Desktop completely
+1. Check that the package is installed: `pip install -e .`
+2. Verify the pytest suite passes: `python -m pytest`
+3. Optionally run the smoke test: `python test_server.py`
+4. Check Claude Desktop config file syntax
+5. Restart Claude Desktop completely
 
 Your XLIFF processing API is now available as an AI-integrated MCP service! 🎉
