@@ -3,7 +3,7 @@
 import logging
 from mcp.server.fastmcp import FastMCP
 from . import __version__
-from .skill_registry import (
+from .skills import (
     get_skill_descriptors,
     list_skill_names,
     list_skill_resource_templates,
