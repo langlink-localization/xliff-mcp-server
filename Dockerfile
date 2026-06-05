@@ -1,5 +1,5 @@
-# Use the current stable Python 3 slim image for smaller size
-FROM python:3-slim-trixie
+# Use the current stable Python 3.14 slim image for smaller size
+FROM python:3.14-slim-trixie
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -24,7 +24,11 @@ COPY README.md LICENSE pyproject.toml ./
 COPY xliff_mcp/ ./xliff_mcp/
 
 # Install the package
-RUN python -m pip install --no-cache-dir --retries 10 --timeout 60 .
+RUN for attempt in 1 2 3; do \
+        python -m pip install --no-cache-dir --retries 10 --timeout 60 . && break; \
+        if [ "$attempt" = "3" ]; then exit 1; fi; \
+        sleep 5; \
+    done
 
 # Create non-root user for security
 RUN useradd --create-home --shell /bin/bash appuser && \
