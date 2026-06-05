@@ -1,5 +1,5 @@
-# Use Python 3.11 slim image for smaller size
-FROM python:3.11-slim
+# Use the current stable Python 3 slim image for smaller size
+FROM python:3-slim-trixie
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
@@ -24,7 +24,7 @@ COPY README.md LICENSE pyproject.toml ./
 COPY xliff_mcp/ ./xliff_mcp/
 
 # Install the package
-RUN python -m pip install --no-cache-dir .
+RUN python -m pip install --no-cache-dir --retries 10 --timeout 60 .
 
 # Create non-root user for security
 RUN useradd --create-home --shell /bin/bash appuser && \
