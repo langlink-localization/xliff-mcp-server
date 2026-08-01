@@ -161,8 +161,8 @@ The runtime still exposes workflow guidance through:
 
 For agent usage inside the repository:
 
-- start with [skills/README.md](/home/user/projects/xliff-mcp-server/skills/README.md)
-- use [skills/catalog.json](/home/user/projects/xliff-mcp-server/skills/catalog.json) as the machine-readable index
+- start with [skills/README.md](skills/README.md)
+- use [skills/catalog.json](skills/catalog.json) as the machine-readable index
 - open the referenced skill markdown file for detailed workflow instructions
 
 ### prepare_xliff_for_translation

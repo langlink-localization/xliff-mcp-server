@@ -17,7 +17,7 @@ The XLIFF MCP Server transforms your xliff-process-api into a **Model Context Pr
 
 ### 1. Install & Configure
 ```bash
-cd /home/user/projects/xliff-mcp-server
+cd /absolute/path/to/xliff-mcp-server
 python setup.py
 ```
 
@@ -102,7 +102,7 @@ Add this to your Claude Desktop config:
     "xliff-processor": {
       "command": "python",
       "args": ["-m", "xliff_mcp.server"],
-      "cwd": "/home/user/projects/xliff-mcp-server"
+      "cwd": "/absolute/path/to/xliff-mcp-server"
     }
   }
 }
