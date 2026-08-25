@@ -10,6 +10,7 @@
 ## Canonical commands
 - Install development dependencies with `pip install -e '.[dev]'`.
 - Run `ruff check .`, `python -m pytest -q`, and `python -m compileall -q xliff_mcp tests`.
+- Run `ruff format` on Python files you change; do not whole-tree reformat unless asked.
 - Validate container changes with `docker compose config`.
 
 ## Working rules
