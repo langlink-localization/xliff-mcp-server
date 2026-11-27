@@ -23,7 +23,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Initialize FastMCP server
-mcp = FastMCP("xliff-processor")
+mcp = FastMCP("xliff-processor", instructions="Check get_server_info for the running version, transport and capabilities before asking for a translation file. Use validate_xliff or validate_tmx to check input before processing.")
 
 # Initialize processors
 xliff_service = XliffProcessorService()

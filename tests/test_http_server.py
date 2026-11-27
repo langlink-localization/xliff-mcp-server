@@ -46,6 +46,7 @@ def test_http_server_info_uses_current_version(monkeypatch) -> None:
     info = json.loads(http_server.get_server_info())
 
     assert info["version"] == __version__
+    assert info["transport"] == "streamable-http"
     assert info["endpoint"] == "/mcp"
     assert info["authentication_required"] is False
     assert "export_xliff_file" in info["available_tools"]
