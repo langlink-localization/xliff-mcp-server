@@ -33,6 +33,7 @@ HTTP_ENDPOINT = "/mcp"
 # Initialize FastMCP server for HTTP deployment.
 mcp = FastMCP(
     "xliff-processor",
+    instructions="Check get_server_info for the running version, transport and capabilities before asking for a translation file. Use validate_xliff or validate_tmx to check input before processing.",
     stateless_http=True,
     host=HTTP_HOST,
     port=HTTP_PORT,

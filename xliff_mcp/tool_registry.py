@@ -317,12 +317,11 @@ def register_tools(
             "available_resource_templates": list(resource_templates),
             "available_skills": list(skill_descriptors),
         }
+        payload["transport"] = transport
+        payload["authentication_required"] = auth_enabled_getter()
         endpoint = endpoint_getter()
         if endpoint is not None:
             payload["endpoint"] = endpoint
-            payload["authentication_required"] = auth_enabled_getter()
-        else:
-            payload["transport"] = transport
         return _dump_json(payload)
 
     return RegisteredTools(
